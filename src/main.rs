@@ -14,12 +14,12 @@ fn main() {
 
     let contour = vec![
         Vertex {
-            position: [0f32, 0f32, 0f32],
+            position: [-1f32, -1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [1f32, 0f32],
         },
         Vertex {
-            position: [1f32, 0f32, 0f32],
+            position: [1f32, -1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [1f32, 1f32],
         },
@@ -29,7 +29,7 @@ fn main() {
             texture: [0f32, 1f32],
         },
         Vertex {
-            position: [0f32, 1f32, 0f32],
+            position: [-1f32, 1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [1f32, 0f32],
         },
