@@ -24,14 +24,24 @@ fn main() {
             texture: [1f32, 1f32],
         },
         Vertex {
-            position: [1f32, 1f32, 0f32],
+            position: [1f32, -1f32, 0f32],
             normal: DEF_NORMAL,
-            texture: [0f32, 1f32],
+            texture: [1f32, 1f32],
         },
         Vertex {
-            position: [-1f32, 1f32, 0f32],
+            position: [-1f32, -1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [1f32, 0f32],
+        },
+        Vertex {
+            position: [-1f32, -1f32, 0f32],
+            normal: DEF_NORMAL,
+            texture: [1f32, 0f32],
+        },
+        Vertex {
+            position: [1f32, -1f32, 0f32],
+            normal: DEF_NORMAL,
+            texture: [1f32, 1f32],
         },
     ];
 
@@ -41,7 +51,7 @@ fn main() {
             .vertices(contour)
             .material(
                 MaterialBuilder::default()
-                    .shader_name("line".to_string())
+                    .shader_name("contours".to_string())
                     .build()
                     .unwrap(),
             )
