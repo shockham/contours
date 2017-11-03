@@ -4,8 +4,9 @@ use caper::types::{RenderItemBuilder, TransformBuilder, MaterialBuilder, Vertex}
 use caper::game::Game;
 use caper::imgui::Ui;
 use caper::input::Key;
-use caper::utils::handle_fp_inputs;
 use caper::mesh::DEF_NORMAL;
+
+mod shaders;
 
 fn main() {
     // crate an instance of the game struct
@@ -23,12 +24,12 @@ fn main() {
             texture: [1f32, 1f32],
         },
         Vertex {
-            position: [1f32, 0f32, 1f32],
+            position: [1f32, 1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [0f32, 1f32],
         },
         Vertex {
-            position: [0f32, 0f32, 1f32],
+            position: [0f32, 1f32, 0f32],
             normal: DEF_NORMAL,
             texture: [1f32, 0f32],
         },
@@ -54,12 +55,14 @@ fn main() {
             .unwrap(),
     );
 
+    // initial setup
+    {
+        shaders::add_custom_shaders(&mut game);
+    }
+
     loop {
         // run the engine update
         game.update(|_: &Ui| {});
-
-        // update the first person inputs
-        handle_fp_inputs(&mut game.input, &mut game.cams[0]);
 
         // quit
         if game.input.keys_down.contains(&Key::Escape) {
