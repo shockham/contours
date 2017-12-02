@@ -1,4 +1,4 @@
-use caper::shader::{ default, texture };
+use caper::shader::default;
 use caper::game::Game;
 
 pub fn add_custom_shaders(game: &mut Game) {
@@ -9,7 +9,7 @@ pub fn add_custom_shaders(game: &mut Game) {
         display,
         "contours",
         default::gl330::VERT,
-        texture::gl330::FRAG,
+        contours::FRAG,
         contours::GEOM,
         contours::TESS_CONTROL,
         contours::TESS_EVAL,
@@ -18,6 +18,22 @@ pub fn add_custom_shaders(game: &mut Game) {
 
 
 mod contours {
+    /// Line fragment shader for wireframes
+    pub const FRAG: &'static str = "
+        #version 330
+
+        in vec3 g_normal;
+        in vec3 g_pos;
+
+        out vec4 frag_output;
+
+        void main() {
+            float alpha = 1.0 - step(0.05, mod(g_pos.y, 0.6));
+            vec3 base_color = vec3(0.0);
+
+            frag_output = vec4(base_color, alpha);
+        }
+    ";
     /// tessellation control shader
     pub const TESS_CONTROL: &'static str = "
         #version 400
@@ -30,7 +46,7 @@ mod contours {
         out vec3 tc_normal[];
         out vec2 tc_texture[];
 
-        const float outer = 1.0;
+        const float outer = 5.0;
 
         void main() {
             tc_normal[gl_InvocationID] = v_normal[gl_InvocationID];
@@ -93,7 +109,7 @@ mod contours {
         #version 330
 
         layout(triangles) in;
-        layout(line_strip, max_vertices=3) out;
+        layout(triangle_strip, max_vertices=3) out;
 
         in vec3 te_normal[];
         in vec3 te_pos[];
