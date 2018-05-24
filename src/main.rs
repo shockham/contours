@@ -1,7 +1,7 @@
 extern crate caper;
 
-use caper::types::{RenderItemBuilder, TransformBuilder, MaterialBuilder};
-use caper::game::{Game, Update, RenderItems};
+use caper::types::{RenderItemBuilder, TransformBuilder, MaterialBuilder, DefaultTag};
+use caper::game::{Game, Update, RenderItems, UpdateStatus};
 use caper::imgui::Ui;
 use caper::input::Key;
 use caper::mesh::gen_perlin_mesh;
@@ -11,7 +11,7 @@ mod shaders;
 
 fn main() {
     // crate an instance of the game struct
-    let mut game = Game::new();
+    let mut game = Game::<DefaultTag>::new();
 
     game.add_render_item(
         RenderItemBuilder::default()
@@ -40,13 +40,22 @@ fn main() {
 
     loop {
         // run the engine update
-        game.update(|_: &Ui| {});
+        let status = game.update(
+            |_: &Ui| {},
+            |game: &mut Game<DefaultTag>| -> UpdateStatus {
+                // update the first person inputs
+                handle_fp_inputs(&mut game.input, &mut game.cams[0]);
 
-        // update the first person inputs
-        handle_fp_inputs(&mut game.input, &mut game.cams[0]);
+                // quit
+                if game.input.keys_down.contains(&Key::Escape) {
+                    return UpdateStatus::Finish;
+                }
 
-        // quit
-        if game.input.keys_down.contains(&Key::Escape) {
+                UpdateStatus::Continue
+            },
+        );
+
+        if let UpdateStatus::Finish = status {
             break;
         }
     }
