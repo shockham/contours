@@ -1,7 +1,7 @@
 extern crate caper;
 
 use caper::types::{RenderItemBuilder, TransformBuilder, MaterialBuilder, DefaultTag};
-use caper::game::{Game, Update, RenderItems, UpdateStatus};
+use caper::game::{Game, Update, RenderItems, UpdateStatus, start_loop};
 use caper::imgui::Ui;
 use caper::input::Key;
 use caper::mesh::gen_perlin_mesh;
@@ -11,7 +11,7 @@ mod shaders;
 
 fn main() {
     // crate an instance of the game struct
-    let mut game = Game::<DefaultTag>::new();
+    let (mut game, event_loop) = Game::<DefaultTag>::new();
 
     game.add_render_item(
         RenderItemBuilder::default()
@@ -38,9 +38,9 @@ fn main() {
         shaders::add_custom_shaders(&mut game);
     }
 
-    loop {
-        // run the engine update
-        let status = game.update(
+    // run the engine update
+    start_loop(event_loop, move |events| {
+        game.update(
             |_: &Ui| {},
             |game: &mut Game<DefaultTag>| -> UpdateStatus {
                 // update the first person inputs
@@ -53,10 +53,7 @@ fn main() {
 
                 UpdateStatus::Continue
             },
-        );
-
-        if let UpdateStatus::Finish = status {
-            break;
-        }
-    }
+            events,
+        )
+    });
 }
